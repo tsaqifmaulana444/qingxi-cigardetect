@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
-type Page = "dashboard" | "students" | "export";
+type Page = "dashboard" | "students" | "export" | "log_out";
 
 function pathToPage(pathname: string): Page {
   if (pathname.includes("students")) return "students";

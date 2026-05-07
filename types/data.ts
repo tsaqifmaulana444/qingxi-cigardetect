@@ -1,7 +1,7 @@
 export type SmokingCategory = 
-  | "Non Perokok"
-  | "Perokok Ringan"
-  | "Perokok Berat";
+  | "Normal"
+  | "Buruk"
+  | "Sangat Buruk";
 
 export interface Student {
   id: number;
@@ -9,7 +9,7 @@ export interface Student {
   nis: string;
   kelas: string;
   lastTested: string;
-  sensorValue: number;   // ✅ IMPORTANT
+  nilai_sensor: number;   // ✅ IMPORTANT
   category: SmokingCategory;
 }
 

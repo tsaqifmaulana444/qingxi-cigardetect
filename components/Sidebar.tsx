@@ -1,6 +1,6 @@
 "use client";
 
-type Page = "dashboard" | "students" | "export";
+type Page = "dashboard" | "students" | "export" | "log_out";
 
 interface SidebarProps {
   activePage: Page;
@@ -11,13 +11,14 @@ const NAV_ITEMS: { label: string; page: Page; icon: string }[] = [
   { label: "Dashboard", page: "dashboard", icon: "▦" },
   { label: "Siswa",     page: "students",  icon: "◉" },
   { label: "Export",    page: "export",    icon: "↓" },
+  { label: "Log Out",    page: "log_out",    icon: "<-" },
 ];
 
 export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
   return (
     <aside className="w-56 shrink-0 bg-green-700 flex flex-col h-screen">
       <div className="px-5 py-4 border-b border-green-600">
-        <p className="text-base font-semibold text-white tracking-tight">ROTECH</p>
+        <p className="text-base font-semibold text-white tracking-tight">ROTECT</p>
         <p className="text-xs text-green-300 mt-0.5">Smoke Breath Analyzer</p>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">

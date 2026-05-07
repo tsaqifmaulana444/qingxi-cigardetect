@@ -5,28 +5,65 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [form, setForm]     = useState({ username: "", password: "" });
-  const [error, setError]   = useState("");
+
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+
     setError("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     setLoading(true);
+    setError("");
 
-    // Replace this with a real API call: POST /api/auth/login
-    await new Promise((r) => setTimeout(r, 700));
+    try {
+      const res = await fetch("http://127.0.0.1:3001/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: form.username,
+          password: form.password,
+        }),
+      });
 
-    if (form.username === "admin" && form.password === "rotech123") {
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login gagal");
+      }
+
+      // simpan token JWT
+      localStorage.setItem("token", data.token);
+
+      // simpan data admin jika perlu
+      localStorage.setItem("admin", JSON.stringify(data.admin));
+
+      // redirect ke dashboard
       router.push("/dashboard");
-    } else {
-      setError("Username atau password salah.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -37,15 +74,25 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 bg-green-700 rounded-2xl mb-4">
             <span className="text-white text-2xl">◎</span>
           </div>
-          <h1 className="text-2xl font-semibold text-green-900">ROTECH</h1>
-          <p className="text-sm text-green-600 mt-1">Smoke Breath Analyzer — Masuk untuk melanjutkan</p>
+
+          <h1 className="text-2xl font-semibold text-green-900">
+            ROTECH
+          </h1>
+
+          <p className="text-sm text-green-600 mt-1">
+            Smoke Breath Analyzer — Masuk untuk melanjutkan
+          </p>
         </div>
 
         {/* Card */}
         <div className="bg-white border border-green-100 rounded-xl p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username */}
             <div>
-              <label className="block text-xs font-medium text-green-800 mb-1.5">Username</label>
+              <label className="block text-xs font-medium text-green-800 mb-1.5">
+                Username
+              </label>
+
               <input
                 type="text"
                 name="username"
@@ -58,8 +105,12 @@ export default function LoginPage() {
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs font-medium text-green-800 mb-1.5">Password</label>
+              <label className="block text-xs font-medium text-green-800 mb-1.5">
+                Password
+              </label>
+
               <input
                 type="password"
                 name="password"
@@ -72,12 +123,14 @@ export default function LoginPage() {
               />
             </div>
 
+            {/* Error */}
             {error && (
               <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
                 {error}
               </p>
             )}
 
+            {/* Button */}
             <button
               type="submit"
               disabled={loading}
