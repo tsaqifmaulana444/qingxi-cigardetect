@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { categoryStyle, sensorBar } from "@/lib/data";
 import type { SmokingCategory } from "@/types/data";
+import TestModal from "@/components/TestModal";
 
 type Student = {
   id: number;
@@ -26,6 +27,7 @@ type ApiTest = {
 export default function DashboardPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetchStudents();
@@ -42,8 +44,6 @@ export default function DashboardPage() {
       });
 
       const data: ApiTest[] = await res.json();
-
-      console.log(data);
 
       const mapped: Student[] = data.map((item) => ({
         id: item.id,
@@ -62,47 +62,55 @@ export default function DashboardPage() {
     }
   }
 
-  const nonPerokok = students.filter(
-    (s) => s.category === "Normal"
-  ).length;
-
-  const ringan = students.filter(
-    (s) => s.category === "Buruk"
-  ).length;
-
-  const berat = students.filter(
-    (s) => s.category === "Sangat Buruk"
-  ).length;
+  const nonPerokok = students.filter((s) => s.category === "Normal").length;
+  const ringan = students.filter((s) => s.category === "Buruk").length;
+  const berat = students.filter((s) => s.category === "Sangat Buruk").length;
 
   const avgSensor =
     students.length > 0
       ? Math.round(
-          students.reduce(
-            (a, s) => a + Number(s.nilai_sensor || 0),
-            0
-          ) / students.length
+          students.reduce((a, s) => a + Number(s.nilai_sensor || 0), 0) /
+            students.length
         )
       : 0;
 
   if (loading) {
     return (
-      <div className="p-6 text-sm text-green-700">
-        Memuat dashboard...
-      </div>
+      <div className="p-6 text-sm text-green-700">Memuat dashboard...</div>
     );
   }
 
   return (
     <div>
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-green-900">
-          Dashboard
-        </h1>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-green-900">Dashboard</h1>
+          <p className="text-sm text-green-600 mt-0.5">
+            Ringkasan hasil pengujian ROTECT
+          </p>
+        </div>
 
-        <p className="text-sm text-green-600 mt-0.5">
-          Ringkasan hasil pengujian ROTECT
-        </p>
+        {/* Tombol buka modal */}
+        <button
+          onClick={() => setOpenModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-800 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Tes Baru
+        </button>
       </div>
 
       {/* Stat cards */}
@@ -136,14 +144,8 @@ export default function DashboardPage() {
             <p className="text-xs text-green-600 uppercase tracking-wider mb-1">
               {c.label}
             </p>
-
-            <p className="text-3xl font-semibold text-green-900">
-              {c.value}
-            </p>
-
-            <p className="text-xs text-gray-400 mt-1">
-              {c.sub}
-            </p>
+            <p className="text-3xl font-semibold text-green-900">{c.value}</p>
+            <p className="text-xs text-gray-400 mt-1">{c.sub}</p>
           </div>
         ))}
       </div>
@@ -156,45 +158,19 @@ export default function DashboardPage() {
 
         <div className="flex gap-6 items-center">
           {[
-            {
-              label: "Non Perokok",
-              range: "< 200",
-              color: "bg-green-500",
-            },
-            {
-              label: "Perokok Ringan",
-              range: "200–500",
-              color: "bg-yellow-400",
-            },
-            {
-              label: "Perokok Berat",
-              range: "> 500",
-              color: "bg-red-500",
-            },
+            { label: "Non Perokok", range: "< 200", color: "bg-green-500" },
+            { label: "Perokok Ringan", range: "200–500", color: "bg-yellow-400" },
+            { label: "Perokok Berat", range: "> 500", color: "bg-red-500" },
           ].map((t) => (
-            <div
-              key={t.label}
-              className="flex items-center gap-2"
-            >
-              <div
-                className={`w-3 h-3 rounded-full ${t.color}`}
-              />
-
-              <span className="text-sm text-gray-700">
-                {t.label}
-              </span>
-
-              <span className="text-xs text-gray-400">
-                ({t.range})
-              </span>
+            <div key={t.label} className="flex items-center gap-2">
+              <div className={`w-3 h-3 rounded-full ${t.color}`} />
+              <span className="text-sm text-gray-700">{t.label}</span>
+              <span className="text-xs text-gray-400">({t.range})</span>
             </div>
           ))}
 
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-xs text-gray-400">
-              Rata-rata sensor:
-            </span>
-
+            <span className="text-xs text-gray-400">Rata-rata sensor:</span>
             <span className="text-sm font-medium text-green-800">
               {avgSensor}
             </span>
@@ -213,18 +189,12 @@ export default function DashboardPage() {
             const { pct, color } = sensorBar(s.nilai_sensor);
 
             return (
-              <li
-                key={s.id}
-                className="flex items-center gap-4 py-3"
-              >
+              <li key={s.id} className="flex items-center gap-4 py-3">
                 <div className="w-36 shrink-0">
                   <p className="text-sm font-medium text-gray-800 truncate">
                     {s.name}
                   </p>
-
-                  <p className="text-xs text-gray-400">
-                    {s.kelas}
-                  </p>
+                  <p className="text-xs text-gray-400">{s.kelas}</p>
                 </div>
 
                 <div className="flex-1">
@@ -252,6 +222,13 @@ export default function DashboardPage() {
           })}
         </ul>
       </div>
+
+      {/* Modal */}
+      <TestModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onSuccess={() => fetchStudents()}
+      />
     </div>
   );
 }
