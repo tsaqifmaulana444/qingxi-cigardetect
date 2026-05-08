@@ -1,45 +1,110 @@
 "use client";
 
-type Page = "dashboard" | "students" | "export" | "log_out";
+import { useRouter } from "next/navigation";
+
+type Page =
+  | "dashboard"
+  | "students"
+  | "export"
+  | "log_out";
 
 interface SidebarProps {
   activePage: Page;
   onNavigate: (page: Page) => void;
 }
 
-const NAV_ITEMS: { label: string; page: Page; icon: string }[] = [
-  { label: "Dashboard", page: "dashboard", icon: "▦" },
-  { label: "Siswa",     page: "students",  icon: "◉" },
-  { label: "Export",    page: "export",    icon: "↓" },
-  { label: "Log Out",    page: "log_out",    icon: "<-" },
+const NAV_ITEMS: {
+  label: string;
+  page: Page;
+  icon: string;
+}[] = [
+  {
+    label: "Dashboard",
+    page: "dashboard",
+    icon: "▦",
+  },
+  {
+    label: "Siswa",
+    page: "students",
+    icon: "◉",
+  },
+  {
+    label: "Export",
+    page: "export",
+    icon: "↓",
+  },
+  {
+    label: "Log Out",
+    page: "log_out",
+    icon: "←",
+  },
 ];
 
-export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
+export default function Sidebar({
+  activePage,
+  onNavigate,
+}: SidebarProps) {
+  const router = useRouter();
+
+  function handleClick(page: Page) {
+    // logout
+    if (page === "log_out") {
+      localStorage.removeItem("token");
+
+      // optional
+      localStorage.removeItem("user");
+
+      router.push("/login");
+
+      return;
+    }
+
+    onNavigate(page);
+  }
+
   return (
     <aside className="w-56 shrink-0 bg-green-700 flex flex-col h-screen">
+      {/* Header */}
       <div className="px-5 py-4 border-b border-green-600">
-        <p className="text-base font-semibold text-white tracking-tight">ROTECT</p>
-        <p className="text-xs text-green-300 mt-0.5">Smoke Breath Analyzer</p>
+        <p className="text-base font-semibold text-white tracking-tight">
+          ROTECT
+        </p>
+
+        <p className="text-xs text-green-300 mt-0.5">
+          Smoke Breath Analyzer
+        </p>
       </div>
+
+      {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.page}
-            onClick={() => onNavigate(item.page)}
+            onClick={() => handleClick(item.page)}
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors text-left ${
               activePage === item.page
                 ? "bg-white text-green-700 font-medium"
                 : "text-green-100 hover:bg-green-600 hover:text-white"
             }`}
           >
-            <span className="text-base leading-none">{item.icon}</span>
+            <span className="text-base leading-none">
+              {item.icon}
+            </span>
+
             {item.label}
           </button>
         ))}
       </nav>
+
+      {/* Footer */}
       <div className="px-4 py-4 border-t border-green-600">
-        <p className="text-xs text-green-300">Universitas Bengkulu</p>
-        <p className="text-xs text-green-400 mt-0.5">Instrumentasi Medis — 2026</p>
+        <p className="text-xs text-green-300">
+          Universitas Bengkulu
+        </p>
+
+        <p className="text-xs text-green-400 mt-0.5">
+          Instrumentasi Medis — 2026
+        </p>
       </div>
     </aside>
   );
