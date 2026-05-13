@@ -28,18 +28,10 @@ type Props = {
   onSuccess?: () => void;
 };
 
-function deriveKategori(nilai: number): string {
-  if (nilai < 100) return "Tidak Merokok";
-  if (nilai < 300) return "Perokok Ringan";
-  if (nilai < 600) return "Perokok Sedang";
-  return "Perokok Berat";
-}
-
 const categoryColor: Record<string, string> = {
-  "Tidak Merokok": "bg-emerald-100 text-emerald-700 border-emerald-200",
-  "Perokok Ringan": "bg-yellow-100 text-yellow-700 border-yellow-200",
-  "Perokok Sedang": "bg-orange-100 text-orange-700 border-orange-200",
-  "Perokok Berat": "bg-red-100 text-red-700 border-red-200",
+  AMAN: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  WASPADA: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  BAHAYA: "bg-red-100 text-red-700 border-red-200",
 };
 
 export default function TestModal({ open, onClose, onSuccess }: Props) {
@@ -169,7 +161,7 @@ export default function TestModal({ open, onClose, onSuccess }: Props) {
         const nilai: number = json.nilai_sensor ?? json.value ?? json.sensor;
         if (nilai !== undefined && nilai !== null) {
           stopPolling();
-          setSensorResult({ nilai_sensor: nilai, kategori: deriveKategori(nilai) });
+          setSensorResult({nilai_sensor: nilai, kategori: json.kategori});
           setStep("confirm");
         }
       } catch {

@@ -1,7 +1,7 @@
 export type SmokingCategory = 
-  | "Normal"
-  | "Buruk"
-  | "Sangat Buruk";
+  | "AMAN"
+  | "WASPADA"
+  | "BAHAYA";
 
 export interface Student {
   id: number;

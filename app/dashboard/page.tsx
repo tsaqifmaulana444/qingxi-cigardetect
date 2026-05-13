@@ -62,9 +62,9 @@ export default function DashboardPage() {
     }
   }
 
-  const nonPerokok = students.filter((s) => s.category === "Normal").length;
-  const ringan = students.filter((s) => s.category === "Buruk").length;
-  const berat = students.filter((s) => s.category === "Sangat Buruk").length;
+  const nonPerokok = students.filter((s) => s.category === "AMAN").length;
+  const ringan = students.filter((s) => s.category === "WASPADA").length;
+  const berat = students.filter((s) => s.category === "BAHAYA").length;
 
   const avgSensor =
     students.length > 0
@@ -158,9 +158,9 @@ export default function DashboardPage() {
 
         <div className="flex gap-6 items-center">
           {[
-            { label: "Non Perokok", range: "< 200", color: "bg-green-500" },
-            { label: "Perokok Ringan", range: "200–500", color: "bg-yellow-400" },
-            { label: "Perokok Berat", range: "> 500", color: "bg-red-500" },
+            { label: "Non Perokok", range: "< 1900", color: "bg-green-500" },
+            { label: "Perokok Ringan", range: "1900-1920", color: "bg-yellow-400" },
+            { label: "Perokok Berat", range: "> 2000", color: "bg-red-500" },
           ].map((t) => (
             <div key={t.label} className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${t.color}`} />

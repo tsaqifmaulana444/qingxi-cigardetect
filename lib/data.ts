@@ -1,9 +1,9 @@
 import type { SmokingCategory, Student } from "@/types/data";
 
 export function categoryStyle(cat: SmokingCategory) {
-  if (cat === "Normal")    return "bg-green-100 text-green-700";
-  if (cat === "Buruk") return "bg-yellow-100 text-yellow-700";
-  if (cat === "Sangat Buruk") return "bg-red-100 text-red-700";
+  if (cat === "AMAN")    return "bg-green-100 text-green-700";
+  if (cat === "WASPADA") return "bg-yellow-100 text-yellow-700";
+  if (cat === "BAHAYA") return "bg-red-100 text-red-700";
   return "bg-red-100 text-red-700";
 }
 
@@ -14,7 +14,7 @@ export function sensorBar(value: number) {
 }
 
 export function classifyCategory(value: number): SmokingCategory {
-  if (value < 200)  return "Normal";
-  if (value <= 500) return "Buruk";
-  return "Sangat Buruk";
+  if (value < 200)  return "AMAN";
+  if (value <= 500) return "WASPADA";
+  return "BAHAYA";
 }
